@@ -5,7 +5,7 @@ use App\Livewire\CreateCustomer;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin');
 });
 
 Route::controller(ShopController::class)->group(function () {

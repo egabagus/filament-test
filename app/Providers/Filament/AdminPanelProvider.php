@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use App\Filament\Resources\DashboardResource\Widgets\TransactionChart;
 use App\Http\Middleware\UserMenuItemMiddleware;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -44,6 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                TransactionChart::class
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -63,7 +65,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentSpatieRolesPermissionsPlugin::make(),
                 ApiServicePlugin::make(),
-                DebuggerPlugin::make(),
+                // DebuggerPlugin::make(),
                 FilamentShieldPlugin::make()
             ]);
     }

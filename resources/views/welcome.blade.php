@@ -13,7 +13,6 @@
 
     <!-- Styles / Scripts -->
     @vite('resource/css/app.css')
-    @endif
 </head>
 
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">

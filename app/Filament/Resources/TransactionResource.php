@@ -28,11 +28,14 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Type\Integer;
 
 class TransactionResource extends Resource
@@ -53,11 +56,11 @@ class TransactionResource extends Resource
 
                 DatePicker::make('date')
                     ->placeholder('Date')
+                    ->required()
                     ->format('Y-m-d'),
 
                 Select::make('payment_id')
                     ->label('Payment Method')
-                    // ->relationship('payment', 'name')
                     ->relationship(
                         name: 'payment',
                         titleAttribute: 'name',
@@ -167,6 +170,9 @@ class TransactionResource extends Resource
                     ])
                     ->columns(2)
             ]);
+        // ->afterSave(function (App\Filament\Resources\Forms $form) {
+        //     Log::info('Successfully create by ' . auth()->email);
+        // });
     }
 
     public static function updateTotals(Get $get, Set $set)
@@ -213,7 +219,14 @@ class TransactionResource extends Resource
                                 $data['date'],
                                 fn(Builder $query, $date): Builder => $query->whereDate('date', '=', $date),
                             );
-                    })
+                    }),
+                SelectFilter::make('payment_status')
+                    ->label('Payment Status')
+                    ->options([
+                        0 => 'Unpaid',
+                        1 => 'Paid',
+                        2 => 'Canceled',
+                    ])
             ])
             ->actions([
                 Tables\actions\ViewAction::make(),
