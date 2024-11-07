@@ -26,6 +26,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\HeaderActionsPosition;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -209,7 +210,8 @@ class TransactionResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('code')->searchable()->sortable(),
-                TextColumn::make('date')->sortable()->dateTime(),
+                TextColumn::make('cust.name')->searchable()->sortable(),
+                TextColumn::make('date')->sortable()->dateTime('d-m-Y'),
                 TextColumn::make('total_amount')->sortable()->numeric(locale: 'id')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 SelectColumn::make('payment_status')
                     ->label('Payment Status')
@@ -240,11 +242,11 @@ class TransactionResource extends Resource
                     ])
             ])
             ->actions([
-                Tables\actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                DeleteAction::make(),
+                Tables\actions\ViewAction::make()->label(false),
+                Tables\Actions\EditAction::make()->label(false),
+                DeleteAction::make()->label(false),
                 Tables\Actions\Action::make('pdf')
-                    ->label('PDF')
+                    ->label(false)
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     // ->url(route('invoice-page'))
@@ -261,7 +263,15 @@ class TransactionResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('pdf')
+                    ->label('Export Excel')
+                    ->color('primary')
+                    ->icon('heroicon-o-document-text')
+                    ->url(route('invoice-page'))
+                    ->openUrlInNewTab(),
+            ])->headerActionsPosition(HeaderActionsPosition::Bottom);
     }
 
     public static function getRelations(): array
