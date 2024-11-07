@@ -8,6 +8,7 @@
         "php": "^8.2",
         "althinect/filament-spatie-roles-permissions": "^2.2",
         "awcodes/filament-table-repeater": "^3.0",
+        "barryvdh/laravel-dompdf": "^3.0",
         "bezhansalleh/filament-shield": "^3.2",
         "calebporzio/sushi": "^2.4",
         "filament/filament": "^3.2.0",

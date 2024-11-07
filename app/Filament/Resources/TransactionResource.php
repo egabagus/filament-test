@@ -11,6 +11,7 @@ use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -32,8 +33,10 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Type\Integer;
@@ -65,6 +68,14 @@ class TransactionResource extends Resource
                         name: 'payment',
                         titleAttribute: 'name',
                         modifyQueryUsing: fn(Builder $query) => $query->where('status', 1),
+                    )
+                    ->required(),
+
+                Select::make('cust_id')
+                    ->label('Customer')
+                    ->relationship(
+                        name: 'customer',
+                        titleAttribute: 'name'
                     )
                     ->required(),
 
@@ -231,7 +242,18 @@ class TransactionResource extends Resource
             ->actions([
                 Tables\actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                DeleteAction::make()
+                DeleteAction::make(),
+                Tables\Actions\Action::make('pdf')
+                    ->label('PDF')
+                    ->color('success')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function (Model $record) {
+                        return response()->streamDownload(function () use ($record) {
+                            echo Pdf::loadHtml(
+                                Blade::render('welcome', ['record' => $record])
+                            )->stream();
+                        }, 'TEST.pdf');
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

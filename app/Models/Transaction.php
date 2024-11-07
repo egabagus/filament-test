@@ -56,4 +56,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(PaymentMethod::class);
     }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }

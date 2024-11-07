@@ -5,10 +5,12 @@ namespace App\Providers\Filament;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Resources\DashboardResource\Widgets\TransactionChart;
 use App\Http\Middleware\UserMenuItemMiddleware;
+use App\Models\Team;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -62,11 +64,13 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->topNavigation()
             ->plugins([
                 FilamentSpatieRolesPermissionsPlugin::make(),
                 ApiServicePlugin::make(),
                 // DebuggerPlugin::make(),
                 FilamentShieldPlugin::make()
             ]);
+        // ->tenant(Team::class);
     }
 }
