@@ -13,3 +13,6 @@ Route::controller(ShopController::class)->group(function () {
 });
 
 Route::get('customer/create', CreateCustomer::class);
+Route::get('/invoice', function () {
+    return view('pdf.invoice');
+})->name('invoice-page');

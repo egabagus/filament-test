@@ -74,7 +74,7 @@ class TransactionResource extends Resource
                 Select::make('cust_id')
                     ->label('Customer')
                     ->relationship(
-                        name: 'customer',
+                        name: 'cust',
                         titleAttribute: 'name'
                     )
                     ->required(),
@@ -247,10 +247,12 @@ class TransactionResource extends Resource
                     ->label('PDF')
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
+                    // ->url(route('invoice-page'))
+                    // ->openUrlInNewTab(),
                     ->action(function (Model $record) {
                         return response()->streamDownload(function () use ($record) {
                             echo Pdf::loadHtml(
-                                Blade::render('welcome', ['record' => $record])
+                                Blade::render('pdf.invoice', ['record' => $record])
                             )->stream();
                         }, 'TEST.pdf');
                     }),
