@@ -3,20 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TransactionResource\Pages;
-use App\Filament\Resources\TransactionResource\RelationManagers;
 use App\Filament\Resources\TransactionResource\Widgets\StatsOverview;
-use App\Models\DetailTransaction;
 use App\Models\Item;
-use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -32,15 +26,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Ramsey\Uuid\Type\Integer;
 
 class TransactionResource extends Resource
 {
@@ -182,9 +170,6 @@ class TransactionResource extends Resource
                     ])
                     ->columns(2)
             ]);
-        // ->afterSave(function (App\Filament\Resources\Forms $form) {
-        //     Log::info('Successfully create by ' . auth()->email);
-        // });
     }
 
     public static function updateTotals(Get $get, Set $set)
@@ -200,7 +185,6 @@ class TransactionResource extends Resource
             return $subtotal + ($prices[$product['item_id']] * $product['qty']) - (0.12 * ($prices[$product['item_id']] * $product['qty']));
         }, 0);
 
-        // dd($subtotal);
         $set('subtotal', $asubtotal);
         $set('total_amount', $subtotal);
     }
