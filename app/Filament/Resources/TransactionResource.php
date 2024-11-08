@@ -209,8 +209,10 @@ class TransactionResource extends Resource
                         2 => 'Canceled',
                     ])
             ])
+            ->defaultSort('date', 'desc')
             ->filters([
-                Filter::make('created_at')
+                Filter::make('date')
+                    ->default('2024-11-08')
                     ->form([
                         DatePicker::make('date')
                     ])
@@ -236,15 +238,15 @@ class TransactionResource extends Resource
                 Tables\Actions\Action::make('pdf')
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
-                    // ->url(route('invoice-page'))
-                    // ->openUrlInNewTab(),
-                    ->action(function (Model $record) {
-                        return response()->streamDownload(function () use ($record) {
-                            echo Pdf::loadHtml(
-                                Blade::render('pdf.invoice', ['record' => $record])
-                            )->stream();
-                        }, 'TEST.pdf');
-                    }),
+                    ->url(route('invoice-page'))
+                    ->openUrlInNewTab(),
+                // ->action(function (Model $record) {
+                //     return response()->streamDownload(function () use ($record) {
+                //         echo Pdf::loadHtml(
+                //             Blade::render('pdf.invoice', ['record' => $record])
+                //         )->stream();
+                //     }, 'TEST.pdf');
+                // }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
