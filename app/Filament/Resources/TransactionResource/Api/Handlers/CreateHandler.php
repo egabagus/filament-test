@@ -1,11 +1,13 @@
 <?php
+
 namespace App\Filament\Resources\TransactionResource\Api\Handlers;
 
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\TransactionResource;
 
-class CreateHandler extends Handlers {
+class CreateHandler extends Handlers
+{
     public static string | null $uri = '/';
     public static string | null $resource = TransactionResource::class;
 
@@ -14,7 +16,8 @@ class CreateHandler extends Handlers {
         return Handlers::POST;
     }
 
-    public static function getModel() {
+    public static function getModel()
+    {
         return static::$resource::getModel();
     }
 
@@ -26,6 +29,6 @@ class CreateHandler extends Handlers {
 
         $model->save();
 
-        return static::sendSuccessResponse($model, "Successfully Create Resource");
+        return static::sendSuccessResponse($model, "Successfully Create Transaction");
     }
 }
