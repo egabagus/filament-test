@@ -9,8 +9,10 @@ use App\Models\Transaction;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -40,16 +42,18 @@ class TransactionResource extends Resource
 
     public static function form(Form $form): Form
     {
+        Carbon::setLocale('id');
         return $form
             ->schema([
                 TextInput::make('code')
                     ->placeholder('Auto')
                     ->readOnly(),
 
-                DatePicker::make('date')
+                DateTimePicker::make('date')
                     ->placeholder('Date')
                     ->required()
-                    ->format('Y-m-d'),
+                    ->default(Carbon::now()->format('Y-m-d h:i:s'))
+                    ->format('Y-m-d h:i:s'),
 
                 Select::make('payment_id')
                     ->label('Payment Method')
@@ -226,11 +230,10 @@ class TransactionResource extends Resource
                     ])
             ])
             ->actions([
-                Tables\actions\ViewAction::make()->label(false),
-                Tables\Actions\EditAction::make()->label(false),
-                DeleteAction::make()->label(false),
+                Tables\actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                DeleteAction::make(),
                 Tables\Actions\Action::make('pdf')
-                    ->label(false)
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     // ->url(route('invoice-page'))
