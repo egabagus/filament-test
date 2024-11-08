@@ -26,6 +26,7 @@ class DetailHandler extends Handlers
         $cust = Customer::where('id', $header->cust_id)->select('id', 'code', 'name', 'phone', 'address')->first();
         $paymment = PaymentMethod::where('id', $header->payment_id)->select('id', 'name')->first();
 
+        //this is for API [get] show transaction
         $data = [
             'code' => $header->code,
             'date' => Carbon::parse($header->date)->format('d-m-Y h:i:s'),
