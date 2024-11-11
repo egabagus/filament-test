@@ -13,15 +13,16 @@ class ItemSoldWidget extends ChartWidget
 
     protected function getData(): array
     {
-        $data = DetailTransaction::select(
-            'item_id',
-            DB::raw('SUM(qty) AS qty')
-        )->groupBy('item_id')->get();
-        // dd($data);
+        $data = DetailTransaction::select('item_id', DB::raw('SUM(qty) AS qty'))
+            ->with(['item' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->groupBy('item_id')
+            ->get();
 
         $result = $data->pluck('qty')->toArray();
-        $item = $data->pluck('item_id')->toArray();
-        // dd($item);
+        $item = $data->pluck('item.name')->toArray();
+
         return [
             'datasets' => [
                 [

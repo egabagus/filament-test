@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ShopController;
 use App\Livewire\CreateCustomer;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ Route::controller(ShopController::class)->group(function () {
 });
 
 Route::get('customer/create', CreateCustomer::class);
-Route::get('/invoice', function () {
-    return view('pdf.invoice');
-})->name('invoice-page');
+Route::get('/invoice/{id}', [InvoiceController::class, 'index']);
+// Route::get('/invoice', function () {
+//     return view('pdf.invoice');
+// })->name('invoice-page');

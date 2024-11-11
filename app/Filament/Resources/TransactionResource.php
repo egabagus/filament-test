@@ -199,7 +199,7 @@ class TransactionResource extends Resource
             ->columns([
                 TextColumn::make('code')->searchable()->sortable(),
                 TextColumn::make('cust.name')->searchable()->sortable(),
-                TextColumn::make('date')->sortable()->dateTime('d-m-Y'),
+                TextColumn::make('date')->sortable()->dateTime('d-m-Y h:i:s'),
                 TextColumn::make('total_amount')->sortable()->numeric(locale: 'id')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 SelectColumn::make('payment_status')
                     ->label('Payment Status')
@@ -238,15 +238,10 @@ class TransactionResource extends Resource
                 Tables\Actions\Action::make('pdf')
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->url(route('invoice-page'))
+                    ->url(function (Transaction $record) {
+                        return url('/invoice/' . $record->id);
+                    })
                     ->openUrlInNewTab(),
-                // ->action(function (Model $record) {
-                //     return response()->streamDownload(function () use ($record) {
-                //         echo Pdf::loadHtml(
-                //             Blade::render('pdf.invoice', ['record' => $record])
-                //         )->stream();
-                //     }, 'TEST.pdf');
-                // }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -258,7 +253,7 @@ class TransactionResource extends Resource
                     ->label('Export Excel')
                     ->color('primary')
                     ->icon('heroicon-o-document-text')
-                    ->url(route('invoice-page'))
+                    ->url('#')
                     ->openUrlInNewTab(),
             ])->headerActionsPosition(HeaderActionsPosition::Bottom);
     }
