@@ -23,31 +23,39 @@ class DetailHandler extends Handlers
         $id = $request->route('id');
 
         $header = Transaction::with('details.item')->where('id', $id)->first();
-        $cust = Customer::where('id', $header->cust_id)->select('id', 'code', 'name', 'phone', 'address')->first();
-        $paymment = PaymentMethod::where('id', $header->payment_id)->select('id', 'name')->first();
 
-        //this is for API [get] show transaction
-        $data = [
-            'code' => $header->code,
-            'date' => Carbon::parse($header->date)->format('d-m-Y h:i:s'),
-            'total_amount' => $header->total_amount,
-            'payment_status' => $header->payment_status,
-            'payment' => $paymment,
-            'customer' => $cust ?? ""
-        ];
+        if ($header) {
+            $cust = Customer::where('id', $header->cust_id)->select('id', 'code', 'name', 'phone', 'address')->first();
+            $paymment = PaymentMethod::where('id', $header->payment_id)->select('id', 'name')->first();
 
-        foreach ($header->details as $detail) {
-            $data['item'][] = [
-                'item_name' => $detail->item->name,
-                'quantity' => $detail->qty,
-                'price' => $detail->price,
-                'total_price' => $detail->total_price,
+            //this is for API [get] show transaction
+            $data = [
+                'code' => $header->code,
+                'date' => Carbon::parse($header->date)->format('d-m-Y h:i:s'),
+                'total_amount' => $header->total_amount,
+                'payment_status' => $header->payment_status,
+                'payment' => $paymment,
+                'customer' => $cust ?? ""
             ];
-        }
 
-        return response()->json([
-            'status' => 'OK',
-            'data' => $data
-        ]);
+            foreach ($header->details as $detail) {
+                $data['item'][] = [
+                    'item_name' => $detail->item->name,
+                    'quantity' => $detail->qty,
+                    'price' => $detail->price,
+                    'total_price' => $detail->total_price,
+                ];
+            }
+
+            return response()->json([
+                'status' => 'OK',
+                'data' => $data
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'Not Found',
+                'message' => 'Transaction Not Found'
+            ], 404);
+        }
     }
 }
